@@ -1,7 +1,7 @@
 import { mkdir, writeFile, copyFile } from "node:fs/promises";
 import { join } from "node:path";
 import { buildManifest } from "@wezzard/relay-driver-host-sdk";
-import { buildWalkthrough } from "@wezzard/relay-driver-host-sdk";
+import { buildTrajectory } from "@wezzard/relay-driver-host-sdk";
 
 const pkg = "/tmp/relay-snap-viewer-pkg";
 await mkdir(join(pkg, "snapshots"), { recursive: true });
@@ -46,8 +46,8 @@ const manifest = await buildManifest({
 });
 const { writeFile: wf } = await import("node:fs/promises");
 await wf(join(pkg, "manifest.json"), JSON.stringify(manifest, null, 2));
-const wt = await buildWalkthrough(pkg, { packageId: manifest.packageId });
-await wf(join(pkg, "walkthrough.json"), JSON.stringify(wt, null, 2));
+const wt = await buildTrajectory(pkg, { packageId: manifest.packageId });
+await wf(join(pkg, "trajectory.json"), JSON.stringify(wt, null, 2));
 // Viewer assets: the review server serves process.cwd()/viewer; also copy into package for portability
 for (const f of ["index.html", "app.js", "style.css"]) {
   await copyFile(join("viewer", f), join(pkg, "viewer", f));

@@ -27,7 +27,7 @@ function fakeTransport(responses: Map<string, FramedResponse>): SessionTransport
     },
     async finish(_options): Promise<FinishResult> {
       return {
-        manifestPath: "walkthrough.json",
+        manifestPath: "trajectory.json",
         deliveryVerified: true,
         recording: "complete",
         execution: "passed",
@@ -65,7 +65,7 @@ test("exec persists the execution identity before transmission", async () => {
   const transport = fakeTransport(new Map());
   const session = await relay.attach("session-pre", transport);
 
-  const result = await session.exec(["python3", "walkthrough.py"], {
+  const result = await session.exec(["python3", "trajectory.py"], {
     step: { id: "save", title: "Save the padding change" },
   });
   assert.equal(result.outcome.kind, "completed");
@@ -73,7 +73,7 @@ test("exec persists the execution identity before transmission", async () => {
   const executions = await session.executions();
   assert.equal(executions.length, 1);
   assert.equal(executions[0].state, "completed");
-  assert.deepEqual(executions[0].argv, ["python3", "walkthrough.py"]);
+  assert.deepEqual(executions[0].argv, ["python3", "trajectory.py"]);
 });
 
 test("exec records uncertainty when the transport reports it, without replay", async () => {

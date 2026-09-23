@@ -41,7 +41,7 @@ function scriptAwareTransport(
     },
     async finish(_options): Promise<FinishResult> {
       return {
-        manifestPath: "walkthrough.json",
+        manifestPath: "trajectory.json",
         deliveryVerified: true,
         recording: "complete",
         execution: "passed",
@@ -74,13 +74,13 @@ test("exec and uploaded JS/TS/Python scripts produce equivalent receipts (EXECUT
   const session = await relay.attach("session-equiv", scriptAwareTransport(new Map(), calls, uploads));
 
   // Path A: direct SSH submission.
-  const execResult = await session.exec(["echo", "walkthrough-step"]);
+  const execResult = await session.exec(["echo", "trajectory-step"]);
 
   // Paths B–D: the same step as uploaded JS, TS, and Python scripts.
   const scripts: Array<{ name: string; language: "javascript" | "typescript" | "python"; body: string }> = [
-    { name: "step.js", language: "javascript", body: "console.log('walkthrough-step');\n" },
-    { name: "step.ts", language: "typescript", body: "const msg: string = 'walkthrough-step';\nconsole.log(msg);\n" },
-    { name: "step.py", language: "python", body: "print('walkthrough-step')\n" },
+    { name: "step.js", language: "javascript", body: "console.log('trajectory-step');\n" },
+    { name: "step.ts", language: "typescript", body: "const msg: string = 'trajectory-step';\nconsole.log(msg);\n" },
+    { name: "step.py", language: "python", body: "print('trajectory-step')\n" },
   ];
   const results = [execResult];
   for (const script of scripts) {

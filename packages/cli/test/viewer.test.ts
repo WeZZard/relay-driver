@@ -1,14 +1,24 @@
 /**
- * Committed Playwright test for the walkthrough viewer (gap #4).
+ * Committed Playwright test for the trajectory viewer (gap #4).
  *
- * Builds a fixture package (journal → buildWalkthrough → walkthrough.json +
+ * Builds a fixture package (journal → buildTrajectory → trajectory.json +
  * snapshot PNGs), serves it with the real review server, and asserts the
  * rendered viewer: step list, before/after image bindings, the group's
  * shared pair cited by interior members, dispatch-captured provenance
  * labels, and refused-step rendering.
  *
+ * Also covers the legacy-compatibility contract (owner decision, 2026-09-23,
+ * docs/decisions.md#D25): a package written before the trajectory rename
+ * carries `walkthrough.json` instead of `trajectory.json`, with the exact
+ * same manifest shape. The underlying evidence package (manifest.json) is
+ * verified with `verifyPackage` regardless of which name is present — it
+ * never depended on that filename — and the viewer must still load and
+ * render such a package by falling back to the old name (see the
+ * commented fallback in viewer/app.js).
+ *
  * Skips cleanly when Playwright is unavailable (it is a dev-time visual
- * dependency, not a runtime one).
+ * dependency, not a runtime one). The `verifyPackage` assertions below run
+ * unconditionally; only the browser-rendering assertions are skipped.
  */
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -16,7 +26,8 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildWalkthrough, type WalkthroughManifest } from "@wezzard/relay-driver-host-sdk";
+import { createHash } from "node:crypto";
+import { buildTrajectory, verifyPackage, type TrajectoryManifest } from "@wezzard/relay-driver-host-sdk";
 import { startReviewServer, type ReviewServer } from "../src/review-server.js";
 
 // Repo viewer/ directory: packages/cli/dist/test/ → repo root is 4 up.
@@ -28,6 +39,7 @@ const PNG_1X1 = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
 );
+const PNG_1X1_SHA256 = createHash("sha256").update(PNG_1X1).digest("hex");
 
 async function loadPlaywright(): Promise<Record<string, unknown> | null> {
   // Normal resolution first; PLAYWRIGHT_MODULE lets a dev point at a global
@@ -44,7 +56,16 @@ async function loadPlaywright(): Promise<Record<string, unknown> | null> {
   return null;
 }
 
-async function buildFixturePackage(): Promise<string> {
+/**
+ * Build a fixture package and write its trajectory manifest under
+ * `manifestFileName` — "trajectory.json" for a current package, or the
+ * legacy "walkthrough.json" to simulate a package written before the
+ * rename. Returns the package root and the parsed evidence-package
+ * manifest (manifest.json) for a direct `verifyPackage` check.
+ */
+async function buildFixturePackage(
+  manifestFileName: "trajectory.json" | "walkthrough.json",
+): Promise<{ root: string; packageManifest: Record<string, unknown> }> {
   const root = await mkdtemp(join(tmpdir(), "viewer-test-pkg-"));
   await mkdir(join(root, "journal"), { recursive: true });
   const start = (actionId: string, stepId: string, title: string, role?: string) =>
@@ -71,34 +92,32 @@ async function buildFixturePackage(): Promise<string> {
     JSON.stringify({ kind: "action-refusal", actionId: "r1", attemptId: "att-1", title: "refused: capture unavailable" }),
   ].join("\n");
   await writeFile(join(root, "journal", "session-events.jsonl"), events);
-  await writeFile(join(root, "manifest.json"), JSON.stringify({
+  const packageManifest = {
     packageId: "pkg-viewer-test", sessionId: "session-viewer",
-    media: [], segments: [], records: [],
+    media: [], segments: [], records: [], attempts: [],
     snapshots: [
-      { path: "snapshots/single-before.png", actionId: "a1", role: "before", capturedAt: "c1", provenance: "dispatch-captured", sha256: "x", bytes: PNG_1X1.length },
-      { path: "snapshots/single-after.png", actionId: "a1", role: "after", declaredAfterIntervalMs: 700, capturedAt: "c2", provenance: "dispatch-captured", sha256: "x", bytes: PNG_1X1.length },
-      { path: "snapshots/grp-before.png", actionId: "g1", role: "before", groupId: "grp-hello", capturedAt: "c3", provenance: "dispatch-captured", sha256: "x", bytes: PNG_1X1.length },
-      { path: "snapshots/grp-after.png", actionId: "g4", role: "after", groupId: "grp-hello", declaredAfterIntervalMs: 800, capturedAt: "c4", provenance: "dispatch-captured", sha256: "x", bytes: PNG_1X1.length },
+      { path: "snapshots/single-before.png", actionId: "a1", role: "before", capturedAt: "c1", provenance: "dispatch-captured", sha256: PNG_1X1_SHA256, bytes: PNG_1X1.length },
+      { path: "snapshots/single-after.png", actionId: "a1", role: "after", declaredAfterIntervalMs: 700, capturedAt: "c2", provenance: "dispatch-captured", sha256: PNG_1X1_SHA256, bytes: PNG_1X1.length },
+      { path: "snapshots/grp-before.png", actionId: "g1", role: "before", groupId: "grp-hello", capturedAt: "c3", provenance: "dispatch-captured", sha256: PNG_1X1_SHA256, bytes: PNG_1X1.length },
+      { path: "snapshots/grp-after.png", actionId: "g4", role: "after", groupId: "grp-hello", declaredAfterIntervalMs: 800, capturedAt: "c4", provenance: "dispatch-captured", sha256: PNG_1X1_SHA256, bytes: PNG_1X1.length },
     ],
-  }));
-  const wt: WalkthroughManifest = await buildWalkthrough(root, { packageId: "pkg-viewer-test" });
-  await writeFile(join(root, "walkthrough.json"), JSON.stringify(wt));
+  };
+  await writeFile(join(root, "manifest.json"), JSON.stringify(packageManifest));
+  const wt: TrajectoryManifest = await buildTrajectory(root, { packageId: "pkg-viewer-test" });
+  await writeFile(join(root, manifestFileName), JSON.stringify(wt));
   // Real PNG bytes so the <img> loads succeed (viewer strips src on error).
   await mkdir(join(root, "snapshots"), { recursive: true });
   for (const name of wt.steps.flatMap((s) => [s.snapshots?.before, s.snapshots?.after])) {
     if (name) await writeFile(join(root, name), PNG_1X1);
   }
-  return root;
+  return { root, packageManifest };
 }
 
-test("viewer renders steps, snapshot pairs, group binding, provenance, refusals", async (t) => {
+async function assertViewerRenders(pkgDir: string, t: { skip(msg: string): void }): Promise<void> {
   const playwright = await loadPlaywright();
-  if (!playwright) return t.skip("Playwright unavailable");
+  if (!playwright) { t.skip("Playwright unavailable"); return; }
 
-  const pkgDir = await buildFixturePackage();
   const server: ReviewServer = await startReviewServer(pkgDir, VIEWER_ROOT);
-  t.after(() => server.close());
-
   const { chromium } = playwright as { chromium: { launch(o: unknown): Promise<any> } };
   const browser = await chromium.launch({ headless: true });
   try {
@@ -138,5 +157,28 @@ test("viewer renders steps, snapshot pairs, group binding, provenance, refusals"
     assert.ok(refusedClass?.includes("step-refused"), "refused step carries step-refused class");
   } finally {
     await browser.close();
+    await server.close();
   }
+}
+
+test("viewer renders steps, snapshot pairs, group binding, provenance, refusals (trajectory.json)", async (t) => {
+  const { root: pkgDir, packageManifest } = await buildFixturePackage("trajectory.json");
+
+  // The underlying evidence package verifies independently of the viewer
+  // manifest's filename or presence.
+  const acceptance = await verifyPackage(packageManifest as any, pkgDir);
+  assert.equal(acceptance.accepted, true, JSON.stringify(acceptance.findings));
+
+  await assertViewerRenders(pkgDir, t);
+});
+
+test("viewer loads a legacy package written with walkthrough.json (D25 backward compatibility)", async (t) => {
+  const { root: pkgDir, packageManifest } = await buildFixturePackage("walkthrough.json");
+
+  // Legacy packages on disk verify exactly like current ones: verifyPackage
+  // never depended on the viewer-manifest filename.
+  const acceptance = await verifyPackage(packageManifest as any, pkgDir);
+  assert.equal(acceptance.accepted, true, JSON.stringify(acceptance.findings));
+
+  await assertViewerRenders(pkgDir, t);
 });

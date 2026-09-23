@@ -53,9 +53,9 @@ console.log(JSON.stringify({
   provenanceOk: manifest.snapshots?.every((s) => s.provenance === "dispatch-captured"),
   findings: acceptance.findings.map((f) => f.code),
 }, null, 1));
-const wt = await import("@wezzard/relay-driver-host-sdk");
-const walkthrough = await wt.buildWalkthrough(src, { packageId: "pkg-snap-proof" });
-await writeFile(join(src, "walkthrough.json"), JSON.stringify(walkthrough, null, 2));
-for (const s of walkthrough.steps) {
+const sdk = await import("@wezzard/relay-driver-host-sdk");
+const trajectory = await sdk.buildTrajectory(src, { packageId: "pkg-snap-proof" });
+await writeFile(join(src, "trajectory.json"), JSON.stringify(trajectory, null, 2));
+for (const s of trajectory.steps) {
   console.log("step:", s.id, "execution:", s.execution, "snapshots:", JSON.stringify(s.snapshots)?.slice(0, 120));
 }

@@ -314,11 +314,11 @@ test("application attachments are byte-verified but uninterpreted (video slot)",
     packageId: "pkg-attach", sessionId: "s1", taskId: "t1", rootDir: pkg,
     records: [{ absolutePath: join(pkg, "records", "journal.jsonl"), packagePath: "records/journal.jsonl" }],
     media: [],
-    attachments: [{ absolutePath: join(pkg, "attachments", "segment.mp4"), packagePath: "attachments/segment.mp4", declaredType: "application/walkthrough-video" }],
+    attachments: [{ absolutePath: join(pkg, "attachments", "segment.mp4"), packagePath: "attachments/segment.mp4", declaredType: "application/trajectory-video" }],
     attempts: [], segments: [],
   });
   const result = await verifyPackage(manifest, pkg);
   assert.equal(result.accepted, true, JSON.stringify(result.findings));
-  assert.equal(manifest.attachments![0].declaredType, "application/walkthrough-video");
+  assert.equal(manifest.attachments![0].declaredType, "application/trajectory-video");
   assert.ok(manifest.attachments![0].sha256.length === 64);
 });

@@ -1,8 +1,8 @@
 /**
- * Relay Driver walkthrough viewer (REVIEW-01/REVIEW-02, TIME-02, SNAP-01).
+ * Relay Driver trajectory viewer (REVIEW-01/REVIEW-02, TIME-02, SNAP-01).
  *
  * Consumes only files inside the delivered package:
- *   walkthrough.json   steps, snapshot pairs, outcome dimensions
+ *   trajectory.json    steps, snapshot pairs, outcome dimensions
  *   snapshots/*.png    dispatch-time before/after causal pairs (primary)
  *   media/*, evidence/*  application-supplied supplementary media
  *
@@ -16,7 +16,7 @@
 const params = new URL(location).searchParams;
 const steps = [];
 let currentStep = -1;
-let walkthrough = null;
+let trajectory = null;
 
 const video = document.getElementById("recording");
 const stepsList = document.getElementById("steps");
@@ -27,21 +27,32 @@ function setOutcome(id, value) {
   el.className = "outcome " + String(value).replace(/\s+/g, "-");
 }
 
+// Legacy compatibility (owner decision, 2026-09-23, docs/decisions.md#D25):
+// packages written before the trajectory rename carry "walkthrough.json"
+// instead of "trajectory.json", with the identical manifest shape. Try the
+// current name first and fall back to the old one so those packages still
+// open; this is the only place that needs to know the old name exists.
+async function fetchTrajectoryManifest() {
+  const current = await fetch("trajectory.json");
+  if (current.ok) return current.json();
+  const legacy = await fetch("walkthrough.json");
+  return legacy.json();
+}
+
 async function load() {
-  const res = await fetch("walkthrough.json");
-  walkthrough = await res.json();
+  trajectory = await fetchTrajectoryManifest();
   document.getElementById("package-meta").textContent =
-    `package ${walkthrough.packageId} · session ${walkthrough.sessionId}`;
+    `package ${trajectory.packageId} · session ${trajectory.sessionId}`;
 
-  setOutcome("outcome-recording", walkthrough.outcomes.recording);
-  setOutcome("outcome-execution", walkthrough.outcomes.execution);
+  setOutcome("outcome-recording", trajectory.outcomes.recording);
+  setOutcome("outcome-execution", trajectory.outcomes.execution);
   // Human review is always initialized pending; only a reviewer changes it.
-  setOutcome("outcome-review", walkthrough.outcomes.humanReview ?? "pending");
+  setOutcome("outcome-review", trajectory.outcomes.humanReview ?? "pending");
 
-  const segmentsById = new Map(walkthrough.segments.map((s) => [s.segmentId, s]));
-  const mediaById = new Map(walkthrough.media.map((m) => [m.path, m]));
+  const segmentsById = new Map(trajectory.segments.map((s) => [s.segmentId, s]));
+  const mediaById = new Map(trajectory.media.map((m) => [m.path, m]));
 
-  for (const step of walkthrough.steps) {
+  for (const step of trajectory.steps) {
     const li = document.createElement("li");
     li.dataset.stepId = step.id;
     const seg = segmentsById.get(step.reviewPoint?.segmentId);
@@ -77,8 +88,8 @@ function selectStep(stepId, updateUrl) {
   if (idx < 0) return;
   currentStep = idx;
   const step = steps[idx];
-  const segmentsById = new Map(walkthrough.segments.map((s) => [s.segmentId, s]));
-  const mediaById = new Map(walkthrough.media.map((m) => [m.path, m]));
+  const segmentsById = new Map(trajectory.segments.map((s) => [s.segmentId, s]));
+  const mediaById = new Map(trajectory.media.map((m) => [m.path, m]));
 
   document.querySelectorAll("#steps li").forEach((li) =>
     li.classList.toggle("current", li.dataset.stepId === stepId));
