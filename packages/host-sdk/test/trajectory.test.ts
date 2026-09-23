@@ -1,15 +1,15 @@
 /**
- * Unit tests for walkthrough manifest construction (viewer data path).
+ * Unit tests for trajectory manifest construction (viewer data path).
  */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { buildWalkthrough } from "../src/index.js";
+import { buildTrajectory } from "../src/index.js";
 
 async function tempPackage(events: string, media: unknown[] = [], segments: unknown[] = []): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "walkthrough-test-"));
+  const root = await mkdtemp(join(tmpdir(), "trajectory-test-"));
   await mkdir(join(root, "journal"), { recursive: true });
   await writeFile(join(root, "journal", "session-events.jsonl"), events);
   await writeFile(join(root, "manifest.json"), JSON.stringify({
@@ -32,7 +32,7 @@ test("steps derive from action-start records with separate outcome dimensions", 
   ], [
     { segmentId: "seg-1", attemptId: "att-1", artifactPath: "media/x.mp4" },
   ]);
-  const wt = await buildWalkthrough(root);
+  const wt = await buildTrajectory(root);
   assert.equal(wt.steps.length, 3);
   assert.equal(wt.steps[0].execution, "completed");
   assert.equal(wt.steps[1].execution, "incomplete"); // dangling start
@@ -54,7 +54,7 @@ test("damaged media drives recording incompleteness without merging dimensions",
   ], [
     { segmentId: "seg-1", attemptId: "att-1", artifactPath: "media/x.mp4" },
   ]);
-  const wt = await buildWalkthrough(root);
+  const wt = await buildTrajectory(root);
   assert.equal(wt.outcomes.recording, "incomplete");
   assert.equal(wt.outcomes.execution, "passed"); // executions succeeded; recording is separate
 });
@@ -109,7 +109,7 @@ test("coalescing-group members bind the shared pair via snapshotPlan.group.group
       { path: AFTER, actionId: "g4", role: "after", groupId: GROUP, declaredAfterIntervalMs: 900, capturedAt: "c4", provenance: "dispatch-captured", sha256: "x", bytes: 1 },
     ],
   }));
-  const wt = await buildWalkthrough(root);
+  const wt = await buildTrajectory(root);
   const byId = new Map(wt.steps.map((s) => [s.id, s]));
 
   // Single event binds its OWN pair.
@@ -166,7 +166,7 @@ test("members without a declared group plan do not inherit snapshots", async () 
       { path: "snapshots/a.png", actionId: "other2", role: "after", groupId: "grp-x", capturedAt: "c", provenance: "dispatch-captured", sha256: "x", bytes: 1 },
     ],
   }));
-  const wt = await buildWalkthrough(root);
+  const wt = await buildTrajectory(root);
   const step = wt.steps.find((s) => s.id === "m")!;
   assert.ok(step, "member step exists");
   assert.equal(step.snapshots, undefined,

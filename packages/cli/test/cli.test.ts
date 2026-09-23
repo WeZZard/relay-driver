@@ -24,7 +24,7 @@ async function withStore(): Promise<{ dir: string; relay: Relay }> {
   await relay.submissions.saveExecutionBeforeSubmit({
     executionId: "execution-cli-1",
     sessionId: "session-cli",
-    argv: ["python3", "walkthrough.py"],
+    argv: ["python3", "trajectory.py"],
     submittedAt: new Date().toISOString(),
     state: "completed",
     outcome: { kind: "completed", exitStatus: { code: 0, signal: null } },

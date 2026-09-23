@@ -55,7 +55,7 @@ export function assertTransition(from: EventState, to: EventState): void {
   }
 }
 
-/** Whether the event still admits further walkthrough input. */
+/** Whether the event still admits further trajectory input. */
 export function inputEnabled(state: EventState): boolean {
   // An admitted (in-flight) or terminal event does not itself disable input;
   // evidence failure and capture loss are separate, runtime-level gates.

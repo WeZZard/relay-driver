@@ -1,5 +1,5 @@
 /**
- * Stage 2 proof (EXECUTION-01 / SCRIPT-01): run the same walkthrough step
+ * Stage 2 proof (EXECUTION-01 / SCRIPT-01): run the same trajectory step
  * through direct SSH submission and uploaded JS/TS/Python scripts against
  * the real remote runtime on RELAY_SSH_HOST, then compare receipts.
  */
@@ -29,29 +29,29 @@ async function main(): Promise<void> {
   });
   console.log("session:", session.sessionId);
 
-  const step = { id: "step-1", title: "Echo the walkthrough marker" };
+  const step = { id: "step-1", title: "Echo the trajectory marker" };
 
   // Path A: direct SSH submission.
-  const a = await session.exec(["echo", "walkthrough-marker-42"], { step });
+  const a = await session.exec(["echo", "trajectory-marker-42"], { step });
   console.log("exec receipt:", a.executionId, a.outcome.kind);
 
   // Paths B–D: uploaded JS, TS, Python — same marker, plus a loop and a
   // deliberate failure inside one script (SCRIPT-01 individual coverage).
   const scripts: Array<[string, "javascript" | "typescript" | "python", string]> = [
     ["step_success.js", "javascript", `
-      const marker = 'walkthrough-marker-42';
+      const marker = 'trajectory-marker-42';
       let acc = '';
       for (let i = 0; i < 3; i++) acc += marker + ' ';
       console.log(acc.trim());
     `],
     ["step_success.ts", "typescript", `
-      const marker: string = 'walkthrough-marker-42';
+      const marker: string = 'trajectory-marker-42';
       let acc: string = '';
       for (let i = 0; i < 3; i++) { acc += marker + ' '; }
       console.log(acc.trim());
     `],
     ["step_success.py", "python", `
-marker = 'walkthrough-marker-42'
+marker = 'trajectory-marker-42'
 acc = ''
 for i in range(3):
     acc += marker + ' '
@@ -93,7 +93,7 @@ print(acc.strip())
   console.log("executions recorded:", executions.length, "unique:", ids.size);
 
   // Equivalence check: all four success paths produced the same marker output.
-  const normalize = (s: string | undefined) => (s ?? "").split(/\s+/).filter((w) => w === "walkthrough-marker-42").length;
+  const normalize = (s: string | undefined) => (s ?? "").split(/\s+/).filter((w) => w === "trajectory-marker-42").length;
   const markerCounts = receipts.map((r) => ({ path: r.path, markerCount: normalize(r.stdout) }));
   // exec echoes once; each script loops 3x and prints once. The SCRIPT-01
   // requirement is equivalent *semantics* (same marker observed, same

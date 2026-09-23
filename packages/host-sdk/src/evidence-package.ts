@@ -83,8 +83,8 @@ export interface PackageManifest {
   /**
    * Application-supplied attachments (2026-09-11 decision): Relay verifies
    * the bytes byte-wise but NEVER interprets their meaning. This is how an
-   * application (e.g. Walkthrough) adds continuous video as supplementary
-   * evidence without Relay owning any video semantics.
+   * application recording a trajectory adds continuous video as
+   * supplementary evidence without Relay owning any video semantics.
    */
   readonly attachments?: ReadonlyArray<{
     readonly path: string;

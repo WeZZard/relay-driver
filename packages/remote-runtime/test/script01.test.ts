@@ -121,7 +121,7 @@ test("CLI process interval is distinct from its inner actions", async () => {
   const f = await fixture();
   // One engine.call wraps the whole CLI process; inner steps are attributed
   // to the same action window via the journal's per-record timestamps.
-  const cliActionId = f.engine.allocateAction({ stepId: "cli-run", title: "Run walkthrough.py" });
+  const cliActionId = f.engine.allocateAction({ stepId: "cli-run", title: "Run trajectory.py" });
   await f.engine.callWithHandle(cliActionId, { stepId: "cli-run" }, async () => {
     // Simulate the process's inner actions journaled under the same session.
     await f.store.appendJournal({ kind: "action-start", sessionId: f.sessionId, attemptId: f.attemptId, stepId: "inner-click", actionId: "action-inner-1", state: "admitted" });

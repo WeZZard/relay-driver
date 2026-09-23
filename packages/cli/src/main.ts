@@ -58,10 +58,10 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
 
 function usage(): string {
   return [
-    "relay-driver — walkthrough recording and evidence relay",
+    "relay-driver — trajectory recording and evidence relay",
     "",
     "Commands:",
-    "  session start --target USER@HOST --task TASK_ID     Start a walkthrough session",
+    "  session start --target USER@HOST --task TASK_ID     Start a trajectory session",
     "  session list                                        List journaled sessions",
     "  session attach --session ID --target USER@HOST      Reattach without resubmitting input",
     "  session continue --session ID --after-attempt ID    Coordinate interruption → new attempt",

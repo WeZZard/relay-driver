@@ -1,5 +1,5 @@
 /**
- * Build the viewer-facing walkthrough manifest (walkthrough.json) from a
+ * Build the viewer-facing trajectory manifest (trajectory.json) from a
  * delivered package: manifest.json (Stage 4) + journal + action records.
  *
  * Steps are derived from action records; execution outcome, recording
@@ -34,7 +34,7 @@ export interface ReviewStep {
   readonly annotations?: Array<{ author: string; writtenAt: string; text: string }>;
 }
 
-export interface WalkthroughManifest {
+export interface TrajectoryManifest {
   readonly formatVersion: string;
   readonly packageId: string;
   readonly sessionId: string;
@@ -44,15 +44,15 @@ export interface WalkthroughManifest {
   readonly outcomes: { recording: string; execution: string; humanReview: string };
 }
 
-/** Build walkthrough.json content for a package directory. */
-export async function buildWalkthrough(
+/** Build trajectory.json content for a package directory. */
+export async function buildTrajectory(
   packageDir: string,
   options: { packageId?: string; steps?: ReviewStep[]; execution?: string } = {},
-): Promise<WalkthroughManifest> {
+): Promise<TrajectoryManifest> {
   const manifest = JSON.parse(await readFile(join(packageDir, "manifest.json"), "utf8")) as {
     packageId: string;
     sessionId: string;
-    media: WalkthroughManifest["media"];
+    media: TrajectoryManifest["media"];
     segments: Array<{ segmentId: string; attemptId: string; artifactPath: string }>;
     snapshots?: Array<{
       path: string; actionId: string; role: "before" | "after";

@@ -185,7 +185,7 @@ export class Relay {
   }
 
   /**
-   * Start a new walkthrough session. The session identity is durably saved
+   * Start a new trajectory session. The session identity is durably saved
    * before any connection attempt so a startup failure after acquiring
    * remote resources remains discoverable (D14).
    */

@@ -1,6 +1,6 @@
 /**
  * Stage 5 REVIEW-01/REVIEW-02: register precise still-frame checkpoints in
- * the delivered package and produce the final walkthrough.json.
+ * the delivered package and produce the final trajectory.json.
  *
  * Review-point media times (TIME-01 mapping, first-captured-frame anchor):
  * the continuation segment's first captured frame corresponds to the
@@ -9,7 +9,7 @@
  * extracted with ffmpeg into evidence/ (separately verifiable), and the
  * registered stillFrame path is checked at load.
  */
-import { buildWalkthrough } from "../src/walkthrough.js";
+import { buildTrajectory } from "../src/trajectory.js";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { execFile } from "node:child_process";
@@ -55,7 +55,7 @@ async function main(): Promise<void> {
     stillFrames[start.actionId!] = frame;
   }
 
-  const wt = await buildWalkthrough(packageDir, { execution: "uncertain" });
+  const wt = await buildTrajectory(packageDir, { execution: "uncertain" });
   const steps = wt.steps.map((s) => ({
     ...s,
     expected: s.execution === "completed"
@@ -78,8 +78,8 @@ async function main(): Promise<void> {
   }));
 
   const final = { ...wt, steps };
-  await writeFile(join(packageDir, "walkthrough.json"), JSON.stringify(final, null, 2));
-  console.log("walkthrough.json written with", steps.length, "steps;",
+  await writeFile(join(packageDir, "trajectory.json"), JSON.stringify(final, null, 2));
+  console.log("trajectory.json written with", steps.length, "steps;",
     Object.keys(stillFrames).length, "registered still frames");
   for (const s of final.steps) {
     console.log(`- ${s.id} [${s.execution}/${s.state}] t=${s.reviewPoint?.timeSeconds?.toFixed(3) ?? "—"}s frame=${s.reviewPoint?.stillFrame ?? "none"}`);
