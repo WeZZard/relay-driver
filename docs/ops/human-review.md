@@ -1,4 +1,4 @@
-# Review a delivered walkthrough
+# Review a delivered trajectory
 
 1. Open the accepted local package and inspect its recording completeness and execution outcome separately.
 2. Select the step relevant to the behavior being judged.

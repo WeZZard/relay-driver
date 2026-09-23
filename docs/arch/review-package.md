@@ -14,7 +14,7 @@ Retry and continuation boundaries remain visible. A browser-compatible recording
 
 Under [D18](../decisions.md#review-and-delivery), the single package retains damaged originals and their diagnostics beside playable continuations. Artifact integrity, decodability, and recording completeness are separate properties. A damaged segment remains visible as unavailable footage; its original bytes can be inspected/downloaded but cannot supply visual evidence. The [artifact acceptance contract](../engineering/artifact-format.md#host-acceptance) defines how such a delivery is verified.
 
-Since the snapshot-evidence decision ([D20](../decisions.md#evidence-snapshot-era)), the package's primary visual evidence is the dispatch-time snapshot pairs (`snapshots/`, provenance `dispatch-captured`), and video enters only as **application-supplied attachments** ([D24](../decisions.md#evidence-snapshot-era)): Relay verifies attachment bytes but never interprets their meaning — a walkthrough application attaches recording segments there when its doctrine demands continuous footage.
+Since the snapshot-evidence decision ([D20](../decisions.md#evidence-snapshot-era)), the package's primary visual evidence is the dispatch-time snapshot pairs (`snapshots/`, provenance `dispatch-captured`), and video enters only as **application-supplied attachments** ([D24](../decisions.md#evidence-snapshot-era)): Relay verifies attachment bytes but never interprets their meaning — an application recording the trajectory attaches recording segments there when its doctrine demands continuous footage.
 
 ## Independent outcomes
 
@@ -24,7 +24,7 @@ Since the snapshot-evidence decision ([D20](../decisions.md#evidence-snapshot-er
 | Execution outcome | What did the operation or test establish? |
 | Human review status | Has a person supplied a judgment about this evidence? |
 
-Human review remains pending until supplied by the reviewer. An agent's pass verdict cannot approve the walkthrough on the person's behalf.
+Human review remains pending until supplied by the reviewer. An agent's pass verdict cannot approve the trajectory on the person's behalf.
 
 ## Handoff boundary
 

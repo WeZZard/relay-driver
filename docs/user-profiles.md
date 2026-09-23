@@ -1,14 +1,14 @@
 # User profiles
 
-Profiles describe responsibilities. One person can operate a walkthrough and later review it. Recording state, test outcome, permission state, and review status are reversible conditions; they do not define additional profiles.
+Profiles describe responsibilities. One person can operate a trajectory and later review it. Recording state, test outcome, permission state, and review status are reversible conditions; they do not define additional profiles.
 
 ```text
-Walkthrough participants
-├── Walkthrough operator
+Trajectory participants
+├── Trajectory operator
 └── Reviewer
 ```
 
-## Walkthrough operator
+## Trajectory operator
 
 The operator directs the test and delivers its evidence. An agent can carry out this responsibility on the person's behalf through tool calls or generated scripts.
 

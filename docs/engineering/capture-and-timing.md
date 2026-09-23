@@ -7,9 +7,9 @@ Relay Driver's built-in evidence is the dispatch-time snapshot pair
 and an after-snapshot exactly the agent-supplied interval after dispatch
 completion. Capture readiness is screenshot capability — probing
 `get_desktop_state` on the cua-driver path — never an active recording
-(D24). Video belongs to applications (D24): a walkthrough application may
-record continuously and attach the segments as application attachments,
-which Relay verifies byte-wise without interpreting.
+(D24). Video belongs to applications (D24): an application recording a
+trajectory may record continuously and attach the segments as application
+attachments, which Relay verifies byte-wise without interpreting.
 
 The agent-supplied `afterIntervalMs` is authoritative (D20): the runtime
 waits exactly that long from dispatch completion. There is no settle
@@ -22,7 +22,7 @@ capture-start/complete times.
 
 Select a capture integration by its evidence contract independently of the backend performing the actions.
 
-The documented cua-driver recording interface provides per-action arguments and results, before/after accessibility state and screenshots, and optional full-display video. Its documented macOS video path uses ScreenCaptureKit. Reuse these artifacts where their contracts satisfy the walkthrough requirements. Relay Driver itself no longer consumes the recording interface (D24); applications that attach video reference these contracts directly.
+The documented cua-driver recording interface provides per-action arguments and results, before/after accessibility state and screenshots, and optional full-display video. Its documented macOS video path uses ScreenCaptureKit. Reuse these artifacts where their contracts satisfy the trajectory requirements. Relay Driver itself no longer consumes the recording interface (D24); applications that attach video reference these contracts directly.
 
 The documented ISO-8601 action timestamps do not by themselves establish exact media alignment. Verify frame/event correlation and recording ownership in the actual execution context before relying on the recorder.
 

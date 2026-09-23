@@ -22,7 +22,7 @@ A completed tool operation establishes only what that tool completed. It does no
 
 [Explicit action handles](../decisions.md#developer-interfaces) give callers an action identity separately from the backend value or exception. Observations, frames, artifacts, and annotations reference that identity through the shared evidence model. Creating an identity or declaring intent does not establish execution or its timestamp.
 
-Under [D17](../decisions.md#developer-interfaces), the callable preserves native outcomes while the evidence channel independently records retention status. Evidence failure immediately prevents further walkthrough input. The enclosing script/session scope must check evidence on exit: a successful body with failed evidence reports an evidence error; an already failing body preserves its original exception and exposes the additional evidence failure in diagnostics and the report. Completion knowledge lost with a process remains unknown to later inspection unless retained evidence establishes it.
+Under [D17](../decisions.md#developer-interfaces), the callable preserves native outcomes while the evidence channel independently records retention status. Evidence failure immediately prevents further trajectory input. The enclosing script/session scope must check evidence on exit: a successful body with failed evidence reports an evidence error; an already failing body preserves its original exception and exposes the additional evidence failure in diagnostics and the report. Completion knowledge lost with a process remains unknown to later inspection unless retained evidence establishes it.
 
 ## Action handles
 

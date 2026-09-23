@@ -2,7 +2,7 @@
 
 ## Open the package
 
-The reviewer opens the delivered package using its local instructions. The overview identifies the walkthrough and keeps recording completeness, execution outcome, and human review status separately readable. The original execution environment is not needed.
+The reviewer opens the delivered package using its local instructions. The overview identifies the trajectory and keeps recording completeness, execution outcome, and human review status separately readable. The original execution environment is not needed.
 
 ## Select a step
 

@@ -2,7 +2,7 @@
 
 ## Preserve the interruption
 
-1. Stop further walkthrough input as soon as recording loss is detected.
+1. Stop further trajectory input as soon as recording loss is detected.
 2. Retain the interruption diagnostic, event records, and any available media.
 3. Finalize decodable partial media where possible and keep the attempt marked incomplete.
 4. Identify the last established evidence and any gap; do not infer successful coverage from a playable file.

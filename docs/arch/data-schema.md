@@ -5,7 +5,7 @@ This is the logical schema shared by the subsystems. It describes record identit
 | Record | Identity and relationships |
 | --- | --- |
 | Task | Inherited environment identity, project, and authority context. |
-| Session | Associates the task with its walkthrough steps and attempts. |
+| Session | Associates the task with its trajectory steps and attempts. |
 | Step | Stable review identity with intent and expected result; references action events and observations. |
 | Attempt | Identifies one execution attempt and its relationship to earlier retries or continuations. |
 | Recording segment | Identifies media, clock mapping, completeness, and any interruption. |

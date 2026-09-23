@@ -1,9 +1,9 @@
 # Review surfaces
 
-The local viewer presents a delivered walkthrough package. [D8](../decisions.md#review-and-delivery) defines the navigation requirements; concrete URL syntax remains an implementation choice.
+The local viewer presents a delivered evidence package. [D8](../decisions.md#review-and-delivery) defines the navigation requirements; concrete URL syntax remains an implementation choice.
 
 ```text
-Walkthrough package
+Evidence package
 ├── Overview
 │   ├── Recording completeness
 │   ├── Execution outcome

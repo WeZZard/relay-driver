@@ -2,11 +2,11 @@
 
 The design wraps existing execution tools and binds their evidence to a reviewable recording. [Owner decisions](../decisions.md) constrain the subsystems; [engineering](../engineering/CLAUDE.md) defines their execution mechanisms.
 
-## Subsystem walkthrough
+## Subsystem trajectory
 
 ```mermaid
 flowchart LR
-    Caller[Agent call or generated script] --> Session[Walkthrough session]
+    Caller[Agent call or generated script] --> Session[Trajectory session]
     Environment[Remote or VM task context] --> Session
     Session --> Action[Action and observation evidence]
     Session --> Timeline[Recording timeline]

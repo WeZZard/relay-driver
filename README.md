@@ -2,7 +2,7 @@
 
 Relay actions from existing tools and scripts, then review the screen recording beside a synchronized explanation. The core supports arbitrary backend integrations; Playwright, Chrome DevTools, and cua-driver are examples.
 
-The project provides SDK support for JavaScript, TypeScript, and Python, together with a CLI. The SDK and CLI share the walkthrough identity, evidence, and timing contracts.
+The project provides SDK support for JavaScript, TypeScript, and Python, together with a CLI. The SDK and CLI share the trajectory identity, evidence, and timing contracts.
 
 Both operations submitted through SSH and scripts uploaded for remote execution must record individual events and timestamps under the same contract. The [execution requirements](docs/decisions.md#execution) and [verification contracts](docs/engineering/verification.md) define the required proof.
 
@@ -34,7 +34,7 @@ The Python host SDK ([`packages/host-sdk-python`](packages/host-sdk-python)) and
 
 ## The problem
 
-A MOV file and a prose timestamp make the reviewer search for the evidence. A walkthrough should let the reviewer select “Increase padding,” watch the actual interaction, and inspect the resulting save confirmation. The recording, action history, and explanation need a shared, verifiable timeline.
+A MOV file and a prose timestamp make the reviewer search for the evidence. A trajectory should let the reviewer select “Increase padding,” watch the actual interaction, and inspect the resulting save confirmation. The recording, action history, and explanation need a shared, verifiable timeline.
 
 ## Design documentation
 
@@ -54,7 +54,7 @@ The [documentation guide](docs/CLAUDE.md) describes the design tree and its main
 
 Open discussions, unresolved choices, tentative proposals, execution plans, and progress live in Markdown documents under ignored `.plans/`; run reviews live in ignored `.reviews/`. Their first-level entries use a `YYYY-MM-DD-HH-MM-<name>` prefix. Keep each plan and its related open discussions in one dated Markdown file. Once a discussion is resolved, update the applicable design documents and record any owner-confirmed decision in `docs/decisions.md`. Runtime artifacts remain outside the tracked design tree.
 
-Environment selection, remote-computer and VM lifecycle, and the walkthrough capture policy are set by the deploying organization's own governing environment policy, which this repository does not ship. Image baselines are supplied externally too; see [Environments](docs/engineering/environments.md) for the interface Relay Driver expects from that policy.
+Environment selection, remote-computer and VM lifecycle, and the trajectory capture policy are set by the deploying organization's own governing environment policy, which this repository does not ship. Image baselines are supplied externally too; see [Environments](docs/engineering/environments.md) for the interface Relay Driver expects from that policy.
 
 ## Releasing
 

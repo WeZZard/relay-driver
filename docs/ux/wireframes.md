@@ -2,11 +2,11 @@
 
 These wireframes describe structure and information hierarchy. They do not prescribe a visual theme, frontend framework, or fixed route syntax.
 
-## Walkthrough review
+## Trajectory review
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Walkthrough title                  Attempt selector   Copy step link   │
+│ Trajectory title                   Attempt selector   Copy step link   │
 │ Recording: Complete     Execution: Failed     Human review: Pending    │
 ├─────────────────────────────────────────┬──────────────────────────────┤
 │                                         │ Steps                        │

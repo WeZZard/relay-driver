@@ -1,9 +1,9 @@
-# Record and export a walkthrough
+# Record and export a trajectory
 
 ## Prepare
 
 1. Read the governing remote-computer or VM policy and complete its allocation, task-registration, installation, and launch requirements.
-2. Bind the walkthrough to that task identity and working directory.
+2. Bind the trajectory to that task identity and working directory.
 3. Verify the installed backend contracts and permissions in the actual execution context.
 4. Place the tested UI and required companion applications on the recorded display, with readable content and a visible pointer.
 5. Establish the display-ownership arrangement and keep its configuration stable.
@@ -12,7 +12,7 @@ Environment authority and credential custody are defined in [environments.md](..
 
 ## Record
 
-1. Start capture and wait for recording readiness and time correlation before walkthrough input.
+1. Start capture and wait for recording readiness and time correlation before trajectory input.
 2. Declare the step's intent and expected result at the chosen annotation boundary.
 3. Perform operations through the recorded backend interface and retain each receipt.
 4. Capture observations with their evidence source and timestamp or recorded-frame reference.
