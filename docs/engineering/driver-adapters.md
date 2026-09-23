@@ -15,7 +15,7 @@ Both execution paths are required by [D13](../decisions.md#execution), and both 
 | Execution path | Required coverage |
 | --- | --- |
 | Submit an operation through SSH | Record the operation in the remote execution environment. A command that performs multiple interactions must also provide individual action records. Code streamed through SSH stdin has the same requirement. |
-| Upload a script, then execute it remotely | Verify the deployed script's identity and connect its recorded operations to the same walkthrough session. Each executed action receives a receipt, including actions inside loops and branches. Upload completion is separate from execution. |
+| Upload a script, then execute it remotely | Verify the deployed script's identity and connect its recorded operations to the same trajectory session. Each executed action receives a receipt, including actions inside loops and branches. Upload completion is separate from execution. |
 
 Use the same remote event-recording contract for both paths. An upload mechanism or SSH wrapper alone does not establish inner-action coverage; the execution boundary must supply it. Preserve the executed script's identity with its parent execution record so later local edits cannot change the evidence of what ran.
 

@@ -1,4 +1,4 @@
-# Walkthrough sessions
+# Trajectory sessions
 
 ## Responsibility
 
@@ -19,7 +19,7 @@ These names describe responsibilities; they do not freeze an API or command spel
 | Continue | Explicitly finalize an interrupted attempt, create a related attempt, establish capture and clock mapping, then report readiness through recoverable phases. |
 | Finish | Close the session's capture and produce a package for host validation; attempt finalization alone does not close the session. |
 
-The session admits walkthrough input only while recording is active. Recording loss leaves the current attempt incomplete and prevents further input until a new recorded segment is ready. Finishing capture is distinct from the host accepting the exported package.
+The session admits trajectory input only while recording is active. Recording loss leaves the current attempt incomplete and prevents further input until a new recorded segment is ready. Finishing capture is distinct from the host accepting the exported package.
 
 ## Recovery and continuation
 

@@ -10,7 +10,7 @@ The method used to locate a target is separate from the method used to activate 
 
 ## Recording is part of execution
 
-Capture readiness precedes walkthrough input. Unexpected capture loss stops further input and produces an incomplete attempt. A later continuation cannot turn the earlier attempt into a complete recording.
+Capture readiness precedes trajectory input. Unexpected capture loss stops further input and produces an incomplete attempt. A later continuation cannot turn the earlier attempt into a complete recording.
 
 ## Sources survive presentation
 
@@ -22,4 +22,4 @@ Recording completeness, execution outcome, and human review answer different que
 
 ## Environment ownership is inherited
 
-The walkthrough consumes the existing task identity and environment authority. It produces durable evidence before that environment is relinquished; it does not create a second allocation or cleanup mechanism.
+The trajectory consumes the existing task identity and environment authority. It produces durable evidence before that environment is relinquished; it does not create a second allocation or cleanup mechanism.
