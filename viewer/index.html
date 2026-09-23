@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Relay Driver — Walkthrough Review</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="viewer/style.css">
+</head>
+<body>
+<header>
+  <h1>Relay Driver — Walkthrough Review</h1>
+  <div id="package-meta"></div>
+  <div id="outcomes" class="outcomes">
+    <span class="outcome" id="outcome-recording" title="Recording completeness">recording: —</span>
+    <span class="outcome" id="outcome-execution" title="Execution outcome">execution: —</span>
+    <span class="outcome" id="outcome-review" title="Human review status">human review: pending</span>
+  </div>
+</header>
+<main>
+  <aside id="steps-pane">
+    <h2>Steps</h2>
+    <ol id="steps" aria-label="Walkthrough steps"></ol>
+    <div class="nav">
+      <button id="prev-step" type="button">← Previous</button>
+      <button id="next-step" type="button">Next →</button>
+    </div>
+    <p class="hint">Stable link: <code id="step-link"></code></p>
+  </aside>
+  <section id="video-pane">
+    <h2 id="current-step-title">Select a step</h2>
+    <div id="snapshot-pair">
+      <h3>Dispatch-time evidence (causal pair)</h3>
+      <div class="pair">
+        <figure>
+          <figcaption>before · dispatch <span class="provenance">dispatch-captured</span></figcaption>
+          <img id="snapshot-before" alt="Before-dispatch baseline state">
+        </figure>
+        <figure>
+          <figcaption>after · <span id="snapshot-after-meta"></span><span class="provenance">dispatch-captured</span></figcaption>
+          <img id="snapshot-after" alt="After-dispatch effect state">
+        </figure>
+      </div>
+      <p id="snapshot-unavailable" class="damaged" hidden></p>
+    </div>
+    <div id="checkpoint">
+      <h3>Supplementary media (application-supplied)</h3>
+      <p id="checkpoint-note" class="hint"></p>
+      <video id="recording" controls preload="metadata" width="960"></video>
+      <img id="still-frame" alt="Precise review-point frame" hidden>
+      <p id="checkpoint-unavailable" class="damaged" hidden></p>
+    </div>
+    <div id="step-detail"></div>
+  </section>
+</main>
+<script type="module" src="viewer/app.js"></script>
+</body>
+</html>

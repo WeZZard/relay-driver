@@ -1,0 +1,33 @@
+{
+  "name": "@wezzard/relay-driver-remote-runtime",
+  "version": "0.1.0",
+  "description": "The Relay Driver remote runtime: admission, capture gating, and per-call recording on the target machine.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeZZard/relay-driver.git",
+    "directory": "packages/remote-runtime"
+  },
+  "homepage": "https://github.com/WeZZard/relay-driver/tree/main/packages/remote-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/WeZZard/relay-driver/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist/src"
+  ],
+  "dependencies": {
+    "@wezzard/relay-driver-core": "^0.1.0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@wezzard/relay-driver-core",
+  "version": "0.1.0",
+  "description": "Backend-independent evidence, identity, and timing primitives for Relay Driver walkthroughs.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeZZard/relay-driver.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/WeZZard/relay-driver/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/WeZZard/relay-driver/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist/src"
+  ]
+}

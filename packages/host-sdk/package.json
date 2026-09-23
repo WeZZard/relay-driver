@@ -1,0 +1,33 @@
+{
+  "name": "@wezzard/relay-driver-host-sdk",
+  "version": "0.1.0",
+  "description": "TypeScript host SDK: drive a Relay Driver session over SSH and assemble the durable evidence package.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeZZard/relay-driver.git",
+    "directory": "packages/host-sdk"
+  },
+  "homepage": "https://github.com/WeZZard/relay-driver/tree/main/packages/host-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/WeZZard/relay-driver/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist/src"
+  ],
+  "dependencies": {
+    "@wezzard/relay-driver-core": "^0.1.0"
+  }
+}
