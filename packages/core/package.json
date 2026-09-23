@@ -1,6 +1,6 @@
 {
   "name": "@wezzard/relay-driver-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Backend-independent evidence, identity, and timing primitives for Relay Driver trajectories.",
   "type": "module",
   "main": "dist/src/index.js",

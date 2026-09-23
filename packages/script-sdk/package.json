@@ -1,6 +1,6 @@
 {
   "name": "@wezzard/relay-driver-script-sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Relay Driver script-side SDK: wrap individual tool calls from uploaded JavaScript, TypeScript, or Python scripts with recorded-call semantics.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -33,7 +33,7 @@
     "test": "node --test dist/test/*.test.js"
   },
   "dependencies": {
-    "@wezzard/relay-driver-remote-runtime": "^0.1.0",
-    "@wezzard/relay-driver-core": "^0.1.0"
+    "@wezzard/relay-driver-remote-runtime": "^0.2.0",
+    "@wezzard/relay-driver-core": "^0.2.0"
   }
 }

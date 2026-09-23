@@ -1,6 +1,6 @@
 {
   "name": "@wezzard/relay-driver-remote-runtime",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The Relay Driver remote runtime: admission, capture gating, and per-call recording on the target machine.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -28,6 +28,6 @@
     "dist/src"
   ],
   "dependencies": {
-    "@wezzard/relay-driver-core": "^0.1.0"
+    "@wezzard/relay-driver-core": "^0.2.0"
   }
 }

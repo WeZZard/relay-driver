@@ -1,6 +1,6 @@
 {
   "name": "@wezzard/relay-driver-host-sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TypeScript host SDK: drive a Relay Driver session over SSH and assemble the durable evidence package.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -28,6 +28,6 @@
     "dist/src"
   ],
   "dependencies": {
-    "@wezzard/relay-driver-core": "^0.1.0"
+    "@wezzard/relay-driver-core": "^0.2.0"
   }
 }
