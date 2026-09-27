@@ -15,10 +15,11 @@
  * - Files are hashed at capture; capture start/complete times are recorded
  *   so provenance states what the image actually represents.
  * - Capture failure = journaled refusal (admission-time refusal for the
- *   before-snapshot; post-dispatch capture failure marks uncertainty).
+ *   before-snapshot; post-dispatch capture failure marks uncertainty). A
+ *   failed capture removes its temporary `.part` file before reporting.
  */
 
-import { mkdir, stat, rename } from "node:fs/promises";
+import { mkdir, stat, rename, rm } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import type { RecordStore } from "./record-store.js";
@@ -149,6 +150,9 @@ export class SnapshotStore {
       await this.capture(tmpPath);
       await rename(tmpPath, finalPath);
     } catch (err) {
+      // Best effort: a failed capture must not leave an unfinished original
+      // behind (D26). The capture failure is reported either way.
+      await rm(tmpPath, { force: true }).catch(() => {});
       throw new SnapshotCaptureError(
         `screenshot capture failed for ${role}-snapshot: ${err instanceof Error ? err.message : String(err)}`,
       );
