@@ -39,6 +39,7 @@ This is the authoritative inventory of owner-confirmed decisions. The records be
 - **D9 Portable handoff before teardown** (owner-ratified): Deliver a portable package with a versioned manifest, relative artifact paths, media metadata, checksums, and opening instructions. Transfer it through the established evidence channel and verify it on the host before cleanup, reboot, or VM destruction. Human review may happen after the execution environment is gone.
 
 - **D18 One package with explicit artifact states** (owner-set, Q6 A, 2026-09-10): Keep damaged originals, their diagnostics, and playable continuations in one portable package. Validate delivery integrity separately from decodability and recording completeness. All media advertised as playable must decode; damaged originals retain their failed decode result and cannot support missing visual claims. Verified delivery permits the governing cleanup procedure while missing verification remains outstanding.
+- **D26 Lifecycle failures leave whole, closed evidence** (owner-requested, 2026-09-27; mechanisms architect-derived): A journal append writes its complete line or reports a failure; a write that makes no progress is an error, never a silently torn record. A failed snapshot capture removes its unfinished temporary file before the failure is reported. A before-snapshot failure after the durable start closes the action with a refusal record stating that no input was dispatched, instead of leaving it admitted without a closing record.
 
 ## Evidence — snapshot era
 

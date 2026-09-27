@@ -18,6 +18,8 @@ dispatch. Snapshots are named `<journal-seq>-<ISO-8601Z>-<role>-<identity>.png`
 (D23), hashed at capture, and journaled with declared interval plus actual
 capture-start/complete times.
 
+Each capture writes to a temporary `.part` file and renames it to its final name only after the capture succeeds. A failed capture removes its `.part` file before the failure is reported, so the snapshots directory holds only completed originals ([D26](../decisions.md#review-and-delivery)).
+
 ## Recorder reuse (application-level video)
 
 Select a capture integration by its evidence contract independently of the backend performing the actions.

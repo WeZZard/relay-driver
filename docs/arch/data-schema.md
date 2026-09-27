@@ -19,6 +19,7 @@ This is the logical schema shared by the subsystems. It describes record identit
 
 - References remain stable when explanations are edited or the package moves to another host.
 - An event's writing time and its referenced evidence time are separate facts.
+- Each journal record is written whole. An append either writes its complete line or reports a failure; a write that makes no progress is an error rather than a torn record ([D26](../decisions.md#review-and-delivery)).
 - An original artifact is never replaced by its derivative.
 - A derivative identifies its original artifact and timeline mapping.
 - Missing required artifacts, checksum mismatches, invalid references, and failure to decode an artifact advertised as playable remain validation failures. An explicitly damaged original can have verified delivery while its playback and coverage remain failed or incomplete, under [artifact acceptance](../engineering/artifact-format.md#host-acceptance).

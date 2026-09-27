@@ -36,7 +36,7 @@ Under [D15](../decisions.md#developer-interfaces), one handle identifies one bac
 | `observe(evidence)` | Register a sourced observation and associate it with this action through the shared evidence store. |
 | `annotate(note)` | Add an attributed explanation with its writing time; preserve original event and observation timestamps. |
 
-An unused handle is not an executed action. A refused or failing call retains an inspectable identity and outcome; missing completion stays uncertain. A deliberate retry receives a new linked handle. Handles recovered in another process support inspection and enrichment without restoring an executable callable.
+An unused handle is not an executed action. A refused or failing call retains an inspectable identity and outcome; missing completion stays uncertain. A call refused after its start was retained, such as when the before-snapshot cannot be captured, is closed by a refusal record stating that no input was dispatched; it never remains admitted without a closing record ([D26](../decisions.md#review-and-delivery)). A deliberate retry receives a new linked handle. Handles recovered in another process support inspection and enrichment without restoring an executable callable.
 
 The callable runs in the process that owns the tool; host-side command submission does not serialize a JavaScript or Python closure for remote execution. A handle surrounding several undisclosed tool calls cannot claim their individual coverage.
 
