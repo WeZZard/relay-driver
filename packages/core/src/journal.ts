@@ -74,7 +74,11 @@ export class JournalWriter {
     return writer;
   }
 
-  /** Append one record. `durable` fsyncs before returning (start records). */
+  /**
+   * Append one record. `durable` fsyncs before returning (start records).
+   * The whole line is written or the call rejects; a rejected append may
+   * leave a partial line, which readers report as a damaged tail.
+   */
   async append(
     record: Omit<JournalRecord, "seq" | "writtenAt">,
     options: { durable?: boolean } = {},
@@ -85,8 +89,20 @@ export class JournalWriter {
       seq: this.seq++,
       writtenAt: new Date().toISOString(),
     } as JournalRecord;
-    const line = JSON.stringify(full) + "\n";
-    await this.handle.write(line, null, "utf8");
+    const line = Buffer.from(JSON.stringify(full) + "\n", "utf8");
+    // A write may be short (for example on a nearly full disk). Keep writing
+    // the rest of the line so a record is never silently torn, and surface a
+    // write that makes no progress instead of looping forever (D26).
+    let offset = 0;
+    while (offset < line.length) {
+      const { bytesWritten } = await this.handle.write(line, offset, line.length - offset, null);
+      if (!(bytesWritten > 0)) {
+        throw new Error(
+          `journal write made no progress after ${offset} of ${line.length} bytes (seq ${full.seq})`,
+        );
+      }
+      offset += bytesWritten;
+    }
     if (options.durable) {
       await this.handle.sync();
     }
