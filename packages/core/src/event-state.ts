@@ -4,7 +4,9 @@
  * One action invocation moves through these evidence states:
  *
  *   pending    awaiting admission
- *   refused    not invoked (capture unavailable, route invalid)
+ *   refused    not invoked (capture unavailable, route invalid); an
+ *              admitted action whose callable never ran (for example, its
+ *              before-snapshot failed) is also closed as refused
  *   admitted   start retained durably, callable invoked once
  *   recorded   completion receipt retained (success or failure)
  *   uncertain  completion cannot be confirmed (process/transport lost)
@@ -33,13 +35,14 @@ export type EvidenceStatus =
   | "retained"
   | "failed"
   | "unconfirmed"
-  | "not-applicable"; // refused: no start was retained
+  | "not-applicable"; // refused: the callable never ran, so no completion evidence applies
 
 /** Legal transitions. Recovery (`uncertain -> recorded`) is evidence-only. */
 const TRANSITIONS: Readonly<Record<EventState, readonly EventState[]>> = {
   pending: ["refused", "incomplete", "admitted"],
   refused: [],
-  admitted: ["recorded", "uncertain", "incomplete"],
+  // admitted -> refused only when the callable never ran (D26).
+  admitted: ["recorded", "uncertain", "incomplete", "refused"],
   recorded: [],
   uncertain: ["recorded"],
   incomplete: [],

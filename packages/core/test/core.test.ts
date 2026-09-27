@@ -28,6 +28,7 @@ test("identity round-trips and is unique", () => {
 test("event state machine refuses replay-shaped transitions", () => {
   assertTransition("pending", "admitted");
   assertTransition("admitted", "recorded");
+  assertTransition("admitted", "refused"); // callable never ran (D26)
   assertTransition("uncertain", "recorded"); // recovery, evidence-only
   assert.throws(() => assertTransition("recorded", "admitted"));
   assert.throws(() => assertTransition("uncertain", "admitted"));

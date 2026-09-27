@@ -394,7 +394,14 @@ export class AdmissionEngine {
         await this.store.retainActionSnapshots(actionId, snapshots, snapPlan);
       }
     } catch (err) {
-      if (err instanceof AdmissionRefusedError || err instanceof EvidenceWriteError) {
+      if (err instanceof AdmissionRefusedError) {
+        // Refused after the durable start (the before-snapshot failed): the
+        // callable never ran. Close the admitted action with a refusal record
+        // so it does not stay admitted without a completion (D26).
+        await this.retainRefusalAfterStart(actionId, err);
+        throw err;
+      }
+      if (err instanceof EvidenceWriteError) {
         throw err;
       }
       toolOutcome = { kind: "failure", error: err };
@@ -427,6 +434,28 @@ export class AdmissionEngine {
       throw toolOutcome.error;
     }
     return toolOutcome.value;
+  }
+
+  /**
+   * Retain the refusal of an action whose start was already retained. A
+   * failure to retain it is an evidence failure: input is disabled (D17).
+   */
+  private async retainRefusalAfterStart(actionId: string, refusal: AdmissionRefusedError): Promise<void> {
+    try {
+      await this.store.retainActionRefusal({ actionId, diagnostic: refusal.message });
+    } catch (err) {
+      this.evidenceFailed = true;
+      this.evidenceFailureDiagnostic = String(err);
+      await this.store.appendJournal({
+        kind: "evidence-failure",
+        sessionId: this.ids.sessionId,
+        attemptId: this.ids.attemptId,
+        actionId,
+        state: "incomplete",
+        diagnostic: String(err),
+      }).catch(() => {});
+      throw new EvidenceWriteError(actionId, { kind: "refused", diagnostic: refusal.message }, err);
+    }
   }
 }
 

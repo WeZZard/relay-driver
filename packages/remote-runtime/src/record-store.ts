@@ -259,6 +259,39 @@ export class RecordStore {
   }
 
   /**
+   * Close an admitted action whose callable never ran (for example, the
+   * before-snapshot could not be captured after the durable start). The
+   * `action-refusal` record states that no input was dispatched; it is not a
+   * tool completion and carries no tool outcome (D26).
+   */
+  async retainActionRefusal(params: { actionId: string; diagnostic: string }): Promise<void> {
+    const record = await this.getAction(params.actionId);
+    if (!record) throw new Error(`unknown action ${params.actionId}`);
+    if (record.state !== "admitted") {
+      throw new Error(`action ${params.actionId} is not admitted (state: ${record.state})`);
+    }
+    await this.appendJournal(
+      {
+        kind: "action-refusal",
+        sessionId: record.sessionId,
+        attemptId: record.attemptId,
+        stepId: record.stepId,
+        executionId: record.executionId,
+        actionId: record.actionId,
+        state: "refused",
+        inputDispatched: false,
+        diagnostic: params.diagnostic,
+      },
+      { durable: true },
+    );
+    await this.putAction({
+      ...record,
+      state: "refused",
+      evidenceStatus: "not-applicable",
+    });
+  }
+
+  /**
    * Mark an admitted action uncertain (process/transport lost before
    * completion). Never resolves the outcome; recovery may later find the
    * original record.
