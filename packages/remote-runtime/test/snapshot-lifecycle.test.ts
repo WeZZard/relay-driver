@@ -79,14 +79,11 @@ test("a refused before-capture closes the admitted action without claiming input
   }
 });
 
-// Reproducer only. SnapshotStore writes one full-display image per role with
-// no size or count check, and ResourceManager's taskStorageBytes is never
-// applied to snapshots, so snapshot storage grows without bound. This test
-// documents that current behavior; it stays todo until the owner chooses
-// scaling, compression, or a snapshot storage budget.
-test("snapshot storage grows past the task storage budget (current behavior)", {
-  todo: "waiting for the owner's decision: scaling, compression, or a snapshot storage budget",
-}, async () => {
+// D27 (pi-secretary PS-D12): snapshot evidence has no size limit. SnapshotStore
+// writes every full-display before/after image as captured, with no size or
+// count check, and D19's taskStorageBytes is not applied to snapshots, so a
+// pair is never refused because the snapshots have outgrown the task budget.
+test("snapshot storage has no budget: every before/after pair is written past the task storage budget (D27)", async () => {
   const IMAGE_BYTES = 1024 * 1024;
   const TASK_STORAGE_BYTES = 2 * IMAGE_BYTES;
   const resources = new ResourceManager({
@@ -114,12 +111,12 @@ test("snapshot storage grows past the task storage budget (current behavior)", {
     let total = 0;
     for (const name of files) total += (await stat(join(dir, name))).size;
 
-    // Every capture was written: nothing refused or bounded the growth.
+    // Every pair was written: nothing refused or bounded the growth.
     assert.equal(files.length, 2 * PAIRS);
     assert.equal(total, 2 * PAIRS * IMAGE_BYTES);
     assert.ok(total > TASK_STORAGE_BYTES,
       `snapshot bytes ${total} exceed the task storage budget ${TASK_STORAGE_BYTES}`);
-    // The resource accounting never saw the snapshot bytes.
+    // D19's task storage accounting does not count snapshot bytes.
     assert.equal(resources.ordinaryWorkHeadroomBytes, headroomBefore);
   } finally {
     await close();

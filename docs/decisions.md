@@ -12,6 +12,7 @@ This is the authoritative inventory of owner-confirmed decisions. The records be
 
 - [Execution](#execution) defines the execution tools, input contract, and environment composition.
 - [Evidence](#evidence) defines capture, timing, original records, and outcome distinctions.
+- [Evidence — snapshot era](#evidence--snapshot-era) defines dispatch-time snapshot evidence, its naming, and its storage.
 - [Review and delivery](#review-and-delivery) defines the review surface and durable handoff.
 - [Project identity](#project-identity) defines the project and repository names.
 - [Documentation](#documentation) defines where design and discussion records belong.
@@ -48,6 +49,7 @@ This is the authoritative inventory of owner-confirmed decisions. The records be
 - **D22 Sender-declared text-entry coalescing** (owner-set, 2026-09-11): Consecutive keystrokes of one text run may form a deterministic, sender-declared group with ONE before/after pair spanning the group (before the first key, after the last). Every keystroke remains its own journal event referencing the group pair. Group membership is declared by the sender, never inferred.
 - **D23 Snapshot naming and provenance** (owner-set, 2026-09-11): Snapshot files are named `<journal-seq>-<ISO-8601Z>-<role>-<dispatch-identity>.png` so they sort chronologically and bind bidirectionally to journal records. Files are hashed at capture; capture-start and capture-complete times are journaled; provenance class is fixed as `dispatch-captured` in the package manifest.
 - **D24 Video is application-level** (owner-set, 2026-09-11): Relay Driver no longer records, requires, or manages video. Continuous recording (e.g. ScreenCaptureKit segments) is an application-level concern — an application recording a trajectory may record video and attach it to the package through the application-attachment slot, which Relay verifies byte-wise but never interprets. Capture readiness is screenshot capability, not an active recording.
+- **D27 Snapshot evidence has no size limit** (owner-set, 2026-09-27; recorded in pi-secretary's decision records as PS-D12): Snapshot evidence has no size limit. Snapshots are not scaled, compressed, deduplicated, or budgeted; every before/after pair is written as captured. D19's task storage budget (`taskStorageBytes`) is not applied to snapshots and never refuses a pair because snapshot storage has grown. This resolves the open snapshot-storage question from the 2026-09-27 lifecycle reproducers (item 4, snapshot growth has no budget) without a behavior change.
 
 ## Project identity
 

@@ -26,6 +26,8 @@ Keep display configuration stable for the recording.
 
 [D19](../decisions.md#execution) requires task storage and per-execution output limits, explicit bounds on Relay buffers, and shutdown capacity protected from ordinary work. Defaults derive from the inherited deadline and measured recorder profile; overrides stay within the task budget. Scripts do not estimate resources per action.
 
+Snapshot originals are outside the task storage budget: [D27](../decisions.md#evidence--snapshot-era) gives snapshot evidence no size limit, so snapshots are never scaled, compressed, deduplicated, or refused for storage, and `taskStorageBytes` is not applied to them.
+
 ### Capacity model
 
 Use bytes for storage, bytes/second for rates, and seconds for durations.
