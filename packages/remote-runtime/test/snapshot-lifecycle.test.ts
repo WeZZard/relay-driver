@@ -8,10 +8,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readdir, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { RecordStore, CaptureGate, AdmissionEngine, AdmissionRefusedError } from "../src/index.js";
+import { RecordStore, CaptureGate, AdmissionEngine, AdmissionRefusedError, ResourceManager } from "../src/index.js";
 import { SnapshotStore, SnapshotCaptureError, type SnapshotCaptureFn } from "../src/snapshots.js";
 
 async function snapshotHarness(capture: SnapshotCaptureFn) {
@@ -74,6 +74,53 @@ test("a refused before-capture closes the admitted action without claiming input
     const record = await store.getAction(start.actionId);
     assert.equal(record?.state, "refused");
     assert.equal(record?.toolOutcome, undefined);
+  } finally {
+    await close();
+  }
+});
+
+// Reproducer only. SnapshotStore writes one full-display image per role with
+// no size or count check, and ResourceManager's taskStorageBytes is never
+// applied to snapshots, so snapshot storage grows without bound. This test
+// documents that current behavior; it stays todo until the owner chooses
+// scaling, compression, or a snapshot storage budget.
+test("snapshot storage grows past the task storage budget (current behavior)", {
+  todo: "waiting for the owner's decision: scaling, compression, or a snapshot storage budget",
+}, async () => {
+  const IMAGE_BYTES = 1024 * 1024;
+  const TASK_STORAGE_BYTES = 2 * IMAGE_BYTES;
+  const resources = new ResourceManager({
+    taskStorageBytes: TASK_STORAGE_BYTES,
+    stopAllowanceBytes: IMAGE_BYTES / 4,
+    perExecutionOutputBytes: TASK_STORAGE_BYTES,
+    relayBufferBytes: TASK_STORAGE_BYTES,
+    volumeFloorBytes: 0,
+    volumePaths: [],
+    pollIntervalMs: 1_000,
+  });
+  const headroomBefore = resources.ordinaryWorkHeadroomBytes;
+  const { stateDir, snapshots, close } = await snapshotHarness(async (out) => {
+    await writeFile(out, Buffer.alloc(IMAGE_BYTES, 0x5a));
+  });
+  try {
+    const PAIRS = 4;
+    for (let i = 1; i <= PAIRS; i++) {
+      const identity = { journalSeq: i, dispatchIdentity: `step-${i}`, sessionId: "s1", attemptId: "a1" };
+      await snapshots.before(identity);
+      await snapshots.after(identity, Date.now(), 0);
+    }
+    const dir = join(stateDir, "snapshots", "s1");
+    const files = (await readdir(dir)).filter((name) => name.endsWith(".png"));
+    let total = 0;
+    for (const name of files) total += (await stat(join(dir, name))).size;
+
+    // Every capture was written: nothing refused or bounded the growth.
+    assert.equal(files.length, 2 * PAIRS);
+    assert.equal(total, 2 * PAIRS * IMAGE_BYTES);
+    assert.ok(total > TASK_STORAGE_BYTES,
+      `snapshot bytes ${total} exceed the task storage budget ${TASK_STORAGE_BYTES}`);
+    // The resource accounting never saw the snapshot bytes.
+    assert.equal(resources.ordinaryWorkHeadroomBytes, headroomBefore);
   } finally {
     await close();
   }
